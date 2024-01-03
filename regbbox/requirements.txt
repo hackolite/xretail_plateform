@@ -1,7 +1,0 @@
-cv2
-imutils
-numpy
-matplotlib
-sklearn
-tensorflow
-

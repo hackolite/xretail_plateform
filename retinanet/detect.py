@@ -9,17 +9,17 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from torch.optim import SGD
 import torchvision
-from dataset import TextDataset
+from .dataset import TextDataset
 import time
 import cv2
 from PIL import Image
 
 #https://pseudo-lab.github.io/Tutorial-Book-en/chapters/en/object-detection/Ch4-RetinaNet.html
-anchor_generator = AnchorGenerator((16, 32, 64, 128, 256, 512), (0.1, 0.2, 0.4, 0.7, 1))
-retina = torchvision.models.detection.retinanet_resnet50_fpn(num_classes = 2, pretrained=False, pretrained_backbone = True, rpn_anchor_generator=anchor_generator)
-device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-retina.to(device)
-retina.load_state_dict(torch.load("../models/retinanet/retina_price_4.pt"))
+
+
+
+def model_constructor(config=None):
+    pass
 
 
 
@@ -39,8 +39,15 @@ def make_prediction(model, img, threshold):
 
     return preds
 
-with torch.no_grad():
-        im = cv2.imread("zeycpsweoi.jpg")
+
+def execute(model_path=None, image=None, config=None):
+    with torch.no_grad():
+        anchor_generator = AnchorGenerator((16, 32, 64, 128, 256, 512), (0.1, 0.2, 0.4, 0.7, 1))
+        retina = torchvision.models.detection.retinanet_resnet50_fpn(num_classes = 2, pretrained=False, pretrained_backbone = True, rpn_anchor_generator=anchor_generator)
+        device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+        retina.to(device)
+        retina.load_state_dict(torch.load(model_path))
+        im = image
         # You may need to convert the color.
         img_data = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         im_pil = Image.fromarray(img_data)
@@ -53,4 +60,4 @@ with torch.no_grad():
         for box in list_of_boxes:
             #print((box[3]-box[1])/(box[2]-box[0]))
             cv2.rectangle(img_data,(int(box[0]),int(box[1])),(int(box[2]),int(box[3])),(0,255,0),3)
-        cv2.imwrite("test.jpg", img_data)
+        return {"image":img_data, "boxes":list_of_boxes}
