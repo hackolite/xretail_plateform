@@ -57,7 +57,7 @@ def execute(model_path=None, image=None, config=None):
         im = im.unsqueeze(0)
         preds = make_prediction(retina, im, 0.5)
         list_of_boxes = preds[0]["boxes"].tolist()
-        for box in list_of_boxes:
-            #print((box[3]-box[1])/(box[2]-box[0]))
-            cv2.rectangle(img_data,(int(box[0]),int(box[1])),(int(box[2]),int(box[3])),(0,255,0),3)
+        #for box in list_of_boxes:
+        #    #print((box[3]-box[1])/(box[2]-box[0]))
+        #    cv2.rectangle(img_data,(int(box[0]),int(box[1])),(int(box[2]),int(box[3])),(0,255,0),3)
         return {"image":img_data, "boxes":list_of_boxes}
